@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>گنجینه سخن | بازی ادبیات کلاسیک ایران</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F1FA;--ink:#14193A;--card:#fff;--lapis:#1F2F7A;--mute:#5A6086;--line:#D9D6EE;
+--c1:#0B7F7C;--c1t:#fff;--c2:#F2B632;--c2t:#14193A;--c3:#C23B63;--c3t:#fff;--c4:#3A4BB0;--c4t:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1330;--ink:#ECEAFB;--card:#1A2050;--lapis:#2A3B94;--mute:#A5AAD0;--line:#2E3670}}
+:root[data-theme="dark"]{--bg:#0F1330;--ink:#ECEAFB;--card:#1A2050;--lapis:#2A3B94;--mute:#A5AAD0;--line:#2E3670}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.9;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:0 16px 40px}
+.hero{background:var(--lapis);color:#fff;margin:0 -16px 20px;padding:34px 20px 30px;text-align:center;
+background-image:repeating-conic-gradient(from 45deg at 50% 50%,rgba(255,255,255,.07) 0 25%,transparent 0 50%);background-size:44px 44px}
+.hero h1{margin:0;font-size:clamp(2rem,9vw,3rem);font-weight:900;line-height:1.3}
+.hero p{margin:8px 0 0;opacity:.9}
+h2{font-size:1.1rem;margin:22px 0 10px}
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.cat{font:inherit;font-weight:700;padding:14px 8px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.cat[aria-pressed="true"]{border-color:var(--c2);box-shadow:0 0 0 3px var(--c2)}
+.btn{font:inherit;font-weight:900;font-size:1.1rem;width:100%;padding:14px;border:0;border-radius:14px;background:var(--c2);color:var(--c2t);cursor:pointer;margin-top:18px}
+.btn.alt{background:transparent;color:var(--ink);border:2px solid var(--line)}
+button:focus-visible{outline:3px solid var(--c1);outline-offset:3px}
+.best{color:var(--mute);text-align:center;margin-top:14px}
+.hud{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin:6px 0 8px}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--c1);transition:width .1s linear}
+.q{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;font-size:1.25rem;font-weight:700;min-height:110px;display:flex;align-items:center}
+.opts{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:520px){.opts{grid-template-columns:1fr 1fr}}
+.o{font:inherit;font-weight:700;font-size:1.05rem;padding:16px 12px;border:3px solid transparent;border-radius:14px;cursor:pointer;min-height:64px}
+.o:nth-child(1){background:var(--c1);color:var(--c1t)}.o:nth-child(2){background:var(--c2);color:var(--c2t)}
+.o:nth-child(3){background:var(--c3);color:var(--c3t)}.o:nth-child(4){background:var(--c4);color:var(--c4t)}
+.o.ok{border-color:var(--ink);box-shadow:0 0 0 3px var(--ink)}
+.o.no{opacity:.45;text-decoration:line-through}
+.o:disabled{cursor:default}
+.note{background:var(--card);border-right:6px solid var(--c1);border-radius:12px;padding:14px 16px;margin-top:16px}
+.note b{display:block}
+.res{text-align:center}
+.res .rank{font-size:2.2rem;font-weight:900;margin:10px 0 0}
+.res .sc{font-size:1.2rem;color:var(--mute)}
+.read{background:var(--card);border:2px dashed var(--c2);border-radius:14px;padding:14px;margin-top:18px}
+.hud{flex-wrap:wrap;gap:4px 10px;font-size:.95rem}
+.coin{background:var(--c2);color:var(--c2t);padding:0 10px;border-radius:12px}
+.wallet{text-align:center;margin-top:16px;font-weight:900;font-size:1.2rem}
+.q{white-space:pre-line}
+details{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0}
+summary{font-weight:700;cursor:pointer}
+details p{margin:6px 0 2px}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+<h1>گنجینه سخن</h1>
+<p>با بازی، سراغ حافظ و سعدی و فردوسی برو</p>
+</section>
+
+<section id="start">
+<h2>از کدام استاد شروع کنیم؟</h2>
+<div class="cats" id="cats"></div>
+<div class="wallet">🪙 <span id="w0"></span> سکه</div>
+<button class="btn" id="go">شروع بازی</button>
+<button class="btn alt" id="names">نام‌نامه شاهنامه: با پهلوانان آشنا شو</button>
+<p class="best" id="best"></p>
+</section>
+
+<section id="game" hidden>
+<div class="hud"><span id="qn"></span><span id="streak"></span><span id="sc"></span><span class="coin" id="cn"></span></div>
+<div class="bar"><i id="tm"></i></div>
+<div class="q" id="q"></div>
+<div class="opts" id="opts"></div>
+<div class="note" id="note" hidden><b id="verdict"></b><span id="exp"></span></div>
+<button class="btn" id="next" hidden>سؤال بعدی</button>
+</section>
+
+<section id="nm" hidden>
+<h2>نام‌نامه شاهنامه</h2>
+<p class="best">هر نام را باز کن و بخوان. سؤال‌های دسته «نام‌های شاهنامه» از همین‌هاست.</p>
+<div id="nl"></div>
+<button class="btn alt" id="nb">بازگشت به منو</button>
+</section>
+
+<section id="end" class="res" hidden>
+<div class="rank" id="rank"></div>
+<div class="sc" id="fin"></div>
+<div class="read"><b>پیشنهاد امشب:</b> <span id="rd"></span></div>
+<button class="btn" id="again">دوباره بازی کن</button>
+<button class="btn alt" id="menu">بازگشت به منو</button>
+</section>
+</main>
+
+<script>
+const Q=[
+["h","غزل «الا یا ایها الساقی ادر کأساً و ناولها» از کیست؟","حافظ",["سعدی","مولانا","خیام"],"این بیت آغاز نخستین غزل دیوان حافظ شیرازی است."],
+["h","لقب حافظ چیست؟","لسان‌الغیب",["شمس‌الشعرا","استاد سخن","خداوندگار"],"حافظ را به‌خاطر رازآمیزی شعرش «لسان‌الغیب» می‌نامند."],
+["h","در کدام شب رسم است دیوان حافظ را بخوانند یا از آن فال بگیرند؟","شب یلدا",["شب عید","چهارشنبه‌سوری","نیمه شعبان"],"فال حافظ و خواندن دیوان او از رسم‌های قدیمی شب یلدا است."],
+["h","آرامگاه حافظ، حافظیه، در کدام شهر است؟","شیراز",["اصفهان","تبریز","مشهد"],"حافظیه در شیراز است و هر سال گردشگران بسیاری دارد."],
+["h","واژه «حافظ» در اصل به چه کسی می‌گفتند؟","کسی که قرآن را از بر دارد",["شاعر دربار","کاتب نسخه‌ها","نگهبان کتابخانه"],"حافظ تخلص شمس‌الدین محمد است که قرآن را از حفظ بود."],
+["s","«گلستان» و «بوستان» از کیست؟","سعدی",["حافظ","نظامی","عطار"],"سعدی شیرازی این دو اثر را در قرن هفتم نوشت."],
+["s","«بنی‌آدم اعضای یکدیگرند» از کدام کتاب است؟","گلستان سعدی",["شاهنامه","مثنوی معنوی","دیوان حافظ"],"این شعر مشهور در باب اول گلستان آمده و بر سردر سازمان ملل هم نقش بسته است."],
+["s","گلستان سعدی چند باب دارد؟","هشت باب",["ده باب","شش باب","پنج باب"],"گلستان هشت باب دارد و بوستان ده باب."],
+["s","گلستان به چه شکل نوشته شده است؟","نثر آمیخته با شعر",["فقط نظم","فقط نثر ساده","نمایشنامه"],"سعدی در گلستان نثر آهنگین و شعر را کنار هم آورده است."],
+["s","روز بزرگداشت سعدی کدام است؟","۱ اردیبهشت",["۲۰ مهر","۲۵ اردیبهشت","۱ دی"],"اول اردیبهشت در تقویم رسمی ایران روز سعدی است."],
+["f","«شاهنامه» اثر کیست؟","فردوسی",["رودکی","نظامی","سعدی"],"فردوسی توسی تاریخ و اسطوره‌های ایران را در شاهنامه به نظم کشید."],
+["f","شاهنامه حدوداً چند بیت دارد؟","۵۰ هزار",["۵ هزار","۱۰ هزار","۱۰۰ هزار"],"شاهنامه نزدیک به پنجاه هزار بیت دارد و از بلندترین منظومه‌های حماسی جهان است."],
+["f","فردوسی نظم شاهنامه را در حدود چند سال به پایان رساند؟","سی سال",["سه سال","ده سال","پنجاه سال"],"او تقریباً سی سال از عمرش را صرف سرودن شاهنامه کرد."],
+["f","«توانا بود هر که دانا بود» از کدام اثر است؟","شاهنامه",["گلستان","منطق‌الطیر","رباعیات خیام"],"این بیت از مشهورترین سخنان شاهنامه درباره ارزش دانایی است."],
+["f","رستم و سهراب از کدام کتاب است؟","شاهنامه",["بوستان","لیلی و مجنون","مثنوی"],"داستان رستم و سهراب از غم‌انگیزترین داستان‌های شاهنامه است."],
+["o","مثنوی معنوی از مولانا چند دفتر دارد؟","شش دفتر",["سه دفتر","ده دفتر","دو دفتر"],"مثنوی شش دفتر دارد و با نی‌نامه شروع می‌شود."],
+["o","مولانا به کدام شخصیت ارادت ویژه داشت و دیوانش را به نام او سرود؟","شمس تبریزی",["سنایی","عطار","سعدی"],"«دیوان شمس» یادگار دوستی مولانا با شمس تبریزی است."],
+["o","«منطق‌الطیر» اثر کیست؟","عطار نیشابوری",["خیام","نظامی","فردوسی"],"عطار در این منظومه سفر پرندگان را برای رسیدن به حقیقت روایت می‌کند."],
+["o","پرندگان در منطق‌الطیر به دنبال چه کسی می‌روند؟","سیمرغ",["هدهد","عقاب","طاووس"],"هدهد راهنمای پرندگان است و مقصدشان سیمرغ."],
+["o","رباعیات معروف به کدام شاعر نسبت داده می‌شود؟","خیام",["حافظ","سعدی","مولانا"],"عمر خیام نیشابوری، ریاضی‌دان و شاعر، با رباعیاتش در جهان شناخته شده است."],
+["o","«لیلی و مجنون» و «خسرو و شیرین» از کیست؟","نظامی گنجوی",["فردوسی","سعدی","عطار"],"نظامی این دو را در «خمسه» یا پنج گنج خود سرود."],
+["o","کدام شاعر را «پدر شعر فارسی» می‌دانند؟","رودکی",["حافظ","سعدی","فردوسی"],"رودکی سمرقندی از نخستین بزرگان شعر فارسی دری است."],
+["h","نام اصلی حافظ چیست؟","شمس‌الدین محمد",["جلال‌الدین محمد","مشرف‌الدین مصلح","ابوالقاسم منصور"],"حافظ تخلص اوست و نامش شمس‌الدین محمد بود."],
+["h","روز بزرگداشت حافظ کدام است؟","۲۰ مهر",["۱ اردیبهشت","۲۵ اردیبهشت","۷ مهر"],"بیستم مهر در تقویم ایران «روز حافظ» است."],
+["s","بوستان سعدی چند باب دارد؟","ده باب",["هشت باب","شش باب","دوازده باب"],"بوستان به نظم است و ده باب دارد؛ گلستان هشت باب."],
+["f","آرامگاه فردوسی در کدام شهر است؟","توس (خراسان)",["شیراز","نیشابور","قونیه"],"آرامگاه فردوسی در توس، نزدیک مشهد است."],
+["f","روز بزرگداشت فردوسی کدام است؟","۲۵ اردیبهشت",["۱ اردیبهشت","۲۰ مهر","۲۸ اردیبهشت"],"۲۵ اردیبهشت روز فردوسی و بزرگداشت زبان فارسی است."],
+["o","آرامگاه مولانا در کدام شهر است؟","قونیه",["شیراز","توس","نیشابور"],"مولانا سال‌های پایانی عمرش را در قونیه گذراند و همان‌جا آرمیده است."],
+["p","مصرع دوم را کامل کن:\nبنی‌آدم اعضای یکدیگرند","که در آفرینش ز یک گوهرند",["که در سایه یک چنار آسوده‌اند","که هر یک به راه دگر می‌روند","که در دانش و دولت همسرند"],"از گلستان سعدی، باب اول."],
+["p","مصرع دوم را کامل کن:\nچو عضوی به درد آورد روزگار","دگر عضوها را نماند قرار",["دگر عضوها را بود استوار","همه خنده بر لب بود بی‌شمار","دل اهل دانش بود بی‌قرار"],"ادامه همان شعر مشهور سعدی در گلستان."],
+["p","مصرع دوم را کامل کن:\nتوانا بود هر که دانا بود","ز دانش دل پیر برنا بود",["ز دولت سر بخت بیدار بود","به هر جای نامش به پیکار بود","ز گنج جهان دست او پر بود"],"از شاهنامه فردوسی."],
+["p","مصرع دوم را کامل کن:\nبه نام خداوند جان و خرد","کز این برتر اندیشه برنگذرد",["که روشن کند جان و تن را ز بد","که تاج بزرگی ز او آید به سر","که جز او کسی در جهان نسپرد"],"آغاز شاهنامه فردوسی."],
+["p","مصرع دوم را کامل کن:\nچو ایران نباشد تن من مباد","بدین بوم و بر زنده یک تن مباد",["که ایران بود جان من تا ابد","به گیتی دگر شهر آباد باد","همه کشورش پر ز داد و ز دین"],"بیت وطن‌دوستانه مشهور شاهنامه."],
+["p","مصرع دوم را کامل کن:\nبسی رنج بردم در این سال سی","عجم زنده کردم بدین پارسی",["جهان را بیاراستم از خوشی","سخن گفتم از شاه و از موبدی","همه گنج بخشیدم از هر کسی"],"فردوسی می‌گوید با سی سال رنج، زبان و فرهنگ عجم را زنده کرد."],
+["p","مصرع دوم را کامل کن:\nبشنو از نی چون حکایت می‌کند","از جدایی‌ها شکایت می‌کند",["از بهاران خوش روایت می‌کند","از دل شب‌ها هدایت می‌کند","با نوایی غم حمایت می‌کند"],"آغاز مثنوی معنوی مولانا (نی‌نامه)."],
+["p","مصرع دوم را کامل کن:\nالا یا ایها الساقی ادر کأساً و ناولها","که عشق آسان نمود اول ولی افتاد مشکل‌ها",["که دور عیش برگشت و نماند از ما نشان‌ها","که بزم باده آراسته شد با دلبرها","که عمر رفت و نشد حاصل از دولت‌ها"],"مطلع نخستین غزل دیوان حافظ."],
+["p","مصرع دوم را کامل کن:\nیوسف گم‌گشته بازآید به کنعان غم مخور","کلبهٔ احزان شود روزی گلستان غم مخور",["تا نمانی در شب هجران بی‌سامان غم مخور","هر که باشد همنشین با اهل عرفان غم مخور","دور گردون می‌رسد بر قصر سلطان غم مخور"],"از غزل‌های امیدبخش حافظ."],
+["p","مصرع دوم را کامل کن:\nدل می‌رود ز دستم صاحب‌دلان خدا را","دردا که راز پنهان خواهد شد آشکارا",["چشمم به راه ماند بی‌مهر و بی‌وفا را","شب رفت و خواب نامد این چشم بی‌ریا را","گفتم که جان سپارم در پای آشنا را"],"از غزل‌های مشهور حافظ."],
+["p","مصرع دوم را کامل کن:\nبوی جوی مولیان آید همی","یاد یار مهربان آید همی",["آب جیحون از بهاران آید همی","شاد باشد هر که شادان آید همی","خنده‌ای از دور و ناگه آید همی"],"از رودکی، در وصف بازگشت امیر به بخارا."],
+["n","اسب رستم چه نام داشت؟","رخش",["شبدیز","بهزاد","گلگون"],"رخش همراه همیشگی رستم در هفت‌خان و نبردهاست."],
+["n","پدر رستم چه کسی بود؟","زال",["سام","گودرز","کیقباد"],"زال پسر سام و پدر رستم است؛ موی سپید داشت و سیمرغ پرورشش داد."],
+["n","سهراب پسر کدام پهلوان بود؟","رستم",["اسفندیار","گیو","بیژن"],"سهراب پسر رستم و تهمینه بود و ناشناس به دست پدر کشته شد."],
+["n","کدام پهلوان شاهنامه روئین‌تن بود؟","اسفندیار",["رستم","سیاوش","گشتاسپ"],"تن اسفندیار آسیب‌ناپذیر بود، جز چشمانش؛ رستم با تیر گز او را از پا درآورد."],
+["n","کاوه آهنگر علیه چه کسی قیام کرد؟","ضحاک",["افراسیاب","جمشید","کیکاووس"],"کاوه با چرم پیش‌بند خود درفش کاویانی را ساخت و فریدون را یاری کرد."],
+["n","شاه توران و دشمن بزرگ ایران در شاهنامه کیست؟","افراسیاب",["ضحاک","سلم","کیخسرو"],"افراسیاب سیاوش را کشت و کیخسرو انتقام گرفت."],
+["n","سیاوش برای اثبات بی‌گناهی از چه گذشت؟","آتش",["آب","کوه","بیابان"],"سیاوش سالم از آتش گذشت و پاکی‌اش ثابت شد."],
+["n","نوروز را در شاهنامه به کدام پادشاه نسبت می‌دهند؟","جمشید",["فریدون","کیخسرو","منوچهر"],"جمشید بر تخت نشست و آن روز را نوروز نام نهادند."],
+["n","کدام پادشاه پیشدادی آتش را کشف کرد و جشن سده از اوست؟","هوشنگ",["جمشید","تهمورث","کیکاووس"],"هوشنگ از برخورد دو سنگ آتش را یافت."]
+];
+const CATS=[["all","همه چیز"],["p","تکمیل شعر"],["n","نام‌های شاهنامه"],["h","حافظ"],["s","سعدی"],["f","فردوسی"],["o","مولانا، عطار، خیام و..."]];
+const N=[["رستم","پهلوان سیستان","فرزند زال و رودابه و بزرگ‌ترین پهلوان ایران. با اسبش رخش از هفت‌خان گذشت و مازندران را گشود."],
+["زال","پدر رستم","فرزند سام. به‌خاطر موی سپیدش رهایش کردند؛ سیمرغ او را پرورد و بعدها عاشق رودابه شد."],
+["رخش","اسب رستم","اسبی نیرومند و باهوش که رستم را در نبردها یاری می‌کرد."],
+["سهراب","پسر رستم","پسر رستم و تهمینه. در نبردی ناشناس با پدر، به دست او کشته شد؛ از غم‌انگیزترین داستان‌های شاهنامه."],
+["تهمینه","مادر سهراب","دختر شاه سمنگان که شبانه به دیدار رستم رفت و همسر او شد."],
+["گردآفرید","زن جنگجو","دختر گژدهم که در دژ سپید، دلیرانه با سهراب رزم کرد."],
+["ضحاک","شاه ماردوش","بر دو دوشش مار روییده بود و هر روز مغز دو جوان را به آن‌ها می‌دادند. کاوه و فریدون او را برانداختند."],
+["کاوه آهنگر","قیام‌کننده","آهنگری که علیه ضحاک برخاست و پیش‌بند چرمینش درفش کاویانی شد."],
+["فریدون","شاه دادگر","ضحاک را شکست داد و جهان را میان سه پسرش سلم و تور و ایرج بخش کرد."],
+["جمشید","شاه پیشدادی","پادشاهی پرشکوه که جشن نوروز را به او نسبت می‌دهند."],
+["هوشنگ","کاشف آتش","از برخورد دو سنگ، آتش پدید آمد و جشن سده یادگار اوست."],
+["کیکاووس","شاه کیانی","پادشاهی هوسران که گاه گرفتار دیو و دشمن شد و رستم نجاتش داد."],
+["سیاوش","پسر کیکاووس","برای اثبات بی‌گناهی از آتش گذشت و بعدها در توران به دست افراسیاب کشته شد."],
+["کیخسرو","پسر سیاوش","شاهی خردمند که انتقام پدر را از افراسیاب گرفت."],
+["افراسیاب","شاه توران","بزرگ‌ترین دشمن ایران در شاهنامه و کشنده سیاوش."],
+["اسفندیار","روئین‌تن","پسر گشتاسپ؛ تنش آسیب‌ناپذیر بود جز چشم. در نبرد با رستم کشته شد."],
+["بیژن و منیژه","دلداده‌ها","بیژن در چاه توران گرفتار شد و رستم او را رهانید. منیژه دختر افراسیاب بود."],
+["سیمرغ","مرغ افسانه‌ای","زال را پرورد، زخم‌های رستم را درمان کرد و راه کشتن اسفندیار را نشان داد."]];
+const READS=["باب اول گلستان سعدی، درباره سیرت پادشاهان","یک غزل از دیوان حافظ، به‌نیت فال","داستان رستم و سهراب از شاهنامه","نی‌نامه، ابتدای دفتر اول مثنوی","چند رباعی از خیام پیش از خواب"];
+const $=id=>document.getElementById(id), fa=n=>Number(n).toLocaleString("fa-IR");
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let cat="all",qs=[],i=0,score=0,right=0,streak=0,t=15,timer=null,locked=false;
+let coins=500;try{const c=localStorage.getItem("sokhan-coins");if(c!==null&&!isNaN(+c))coins=+c}catch(e){}
+function setCoins(v){coins=Math.max(0,v);try{localStorage.setItem("sokhan-coins",coins)}catch(e){}$("cn").textContent="🪙 "+fa(coins);$("w0").textContent=fa(coins)}
+function best(){try{return +localStorage.getItem("sokhan-best")||0}catch(e){return 0}}
+function setBest(v){try{localStorage.setItem("sokhan-best",v)}catch(e){}}
+function showBest(){const b=best();$("best").textContent=b?"بهترین امتیاز تو: "+fa(b):""}
+function show(id){["start","game","end","nm"].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
+CATS.forEach(([k,n])=>{const b=document.createElement("button");b.className="cat";b.textContent=n;b.setAttribute("aria-pressed",k===cat);
+b.onclick=()=>{cat=k;[...$("cats").children].forEach(c=>c.setAttribute("aria-pressed",c===b))};$("cats").appendChild(b)});
+function start(){qs=shuf(Q.filter(q=>cat==="all"||q[0]===cat)).slice(0,10);i=0;score=0;right=0;streak=0;show("game");ask()}
+function ask(){locked=false;const q=qs[i];$("qn").textContent="سؤال "+fa(i+1)+" از "+fa(qs.length);
+$("streak").textContent=streak>1?"🔥 "+fa(streak):"";$("sc").textContent=fa(score)+" امتیاز";
+$("q").textContent=q[1];$("note").hidden=true;$("next").hidden=true;
+const o=$("opts");o.innerHTML="";shuf([q[2],...q[3]]).forEach(a=>{const b=document.createElement("button");b.className="o";b.textContent=a;b.onclick=()=>pick(b,a);o.appendChild(b)});
+t=15;tick();clearInterval(timer);timer=setInterval(()=>{t-=.1;tick();if(t<=0)pick(null,null)},100)}
+function tick(){$("tm").style.width=Math.max(0,t/15*100)+"%"}
+function pick(btn,a){if(locked)return;locked=true;clearInterval(timer);const q=qs[i],ok=a===q[2];
+[...$("opts").children].forEach(b=>{b.disabled=true;if(b.textContent===q[2]){b.classList.add("ok");b.textContent="✓ "+b.textContent}else if(b===btn){b.classList.add("no")}else{b.style.opacity=.6}});
+if(ok){right++;streak++;score+=100+Math.round(t)*5+Math.min(streak-1,5)*10;setCoins(coins+2)}else{streak=0;setCoins(coins-1)}
+$("sc").textContent=fa(score)+" امتیاز";$("streak").textContent=streak>1?"🔥 "+fa(streak):"";
+$("verdict").textContent=ok?"درست گفتی! دو سکه گرفتی 🪙":(a===null?"وقت تمام شد. ":"")+"پاسخ درست: "+q[2]+" (یک سکه کم شد)";
+$("exp").textContent=q[4];$("note").hidden=false;$("next").hidden=false;$("next").textContent=i===qs.length-1?"دیدن نتیجه":"سؤال بعدی";$("next").focus()}
+$("next").onclick=()=>{i++;i<qs.length?ask():finish()};
+function finish(){const r=right/qs.length;$("rank").textContent=r>=.9?"استاد سخن 🏆":r>=.7?"ادیب 📜":r>=.4?"شاگرد کوشا ✍️":"تازه‌وارد دبستان ادب 🌱";
+const nb=score>best();if(nb)setBest(score);
+$("fin").textContent=fa(right)+" پاسخ درست از "+fa(qs.length)+" و "+fa(score)+" امتیاز"+(nb?" (رکورد جدید!)":"")+"، موجودی تو "+fa(coins)+" سکه";
+$("rd").textContent=READS[Math.floor(Math.random()*READS.length)]+". چند دقیقه بخوان، لذتش بیشتر از هر امتیازی است.";show("end");showBest()}
+$("go").onclick=start;$("again").onclick=start;$("menu").onclick=()=>show("start");showBest();setCoins(coins);
+N.forEach(([n,t,d])=>{const e=document.createElement("details");e.innerHTML="<summary></summary><p></p>";e.firstChild.textContent=n+" | "+t;e.lastChild.textContent=d;$("nl").appendChild(e)});
+$("names").onclick=()=>show("nm");$("nb").onclick=()=>show("start");
+</script>
+</body>
+</html>
