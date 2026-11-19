@@ -53,6 +53,19 @@ button:focus-visible{outline:3px solid var(--c1);outline-offset:3px}
 details{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0}
 summary{font-weight:700;cursor:pointer}
 details p{margin:6px 0 2px}
+.av{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.av button{font-size:1.6rem;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:2px 8px;cursor:pointer}
+.av button[aria-pressed="true"]{border-color:var(--c2);box-shadow:0 0 0 3px var(--c2)}
+input.nm{font:inherit;width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.hint{font:inherit;font-weight:700;width:100%;padding:10px;border-radius:12px;border:2px dashed var(--c2);background:transparent;color:var(--ink);margin-top:10px;cursor:pointer}
+.hint:disabled{opacity:.4;cursor:default}
+.ban{background:var(--c3);color:#fff;border-radius:14px;padding:12px;text-align:center;font-weight:700;margin-top:12px}
+.occ{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.occ .cat{padding:8px 12px}
+.stat{display:flex;align-items:center;gap:8px;margin:6px 0}
+.stat span{min-width:120px;font-weight:700}
+.xp{height:12px;background:var(--line);border-radius:8px;overflow:hidden}
+.xp i{display:block;height:100%;background:var(--c2)}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -67,19 +80,46 @@ details p{margin:6px 0 2px}
 <section id="start">
 <h2>از کدام استاد شروع کنیم؟</h2>
 <div class="cats" id="cats"></div>
-<div class="wallet">🪙 <span id="w0"></span> سکه</div>
+<div id="ban"></div>
+<h2>تعداد بازیکن</h2>
+<div class="cats" id="pc"></div>
+<div class="wallet"><span id="pav"></span> <span id="pnm"></span> | 🪙 <span id="w0"></span> سکه</div>
+<button class="btn alt" id="gift"></button>
 <button class="btn" id="go">شروع بازی</button>
 <button class="btn alt" id="names">نام‌نامه شاهنامه: با پهلوانان آشنا شو</button>
+<button class="btn alt" id="occb">چالش‌های مناسبتی</button>
+<button class="btn alt" id="prof">پروفایل، سطح و آواتار</button>
 <p class="best" id="best"></p>
 </section>
 
 <section id="game" hidden>
 <div class="hud"><span id="qn"></span><span id="streak"></span><span id="sc"></span><span class="coin" id="cn"></span></div>
+<div id="who" class="best" style="margin:0"></div>
 <div class="bar"><i id="tm"></i></div>
 <div class="q" id="q"></div>
 <div class="opts" id="opts"></div>
+<button class="hint" id="hint"></button>
 <div class="note" id="note" hidden><b id="verdict"></b><span id="exp"></span></div>
 <button class="btn" id="next" hidden>سؤال بعدی</button>
+</section>
+
+<section id="pf" hidden>
+<h2>پروفایل من</h2>
+<input class="nm" id="pnm2" maxlength="14" aria-label="نام بازیکن" placeholder="نام تو">
+<div class="av" id="avs"></div>
+<div class="res"><b id="pl"></b></div>
+<div class="xp"><i id="xpb"></i></div>
+<h2>در کدام بخش قوی‌تری؟</h2>
+<div id="sts"></div>
+<p class="best" id="bst"></p>
+<button class="btn alt" id="pb">بازگشت به منو</button>
+</section>
+
+<section id="oc" hidden>
+<h2>چالش‌های مناسبتی</h2>
+<p class="best">در روز مناسبت، چالش آن شاعر باز می‌شود و با ۷ پاسخ درست، ۲۰ سکه جایزه می‌گیری.</p>
+<div id="ocl"></div>
+<button class="btn alt" id="ob">بازگشت به منو</button>
 </section>
 
 <section id="nm" hidden>
@@ -177,30 +217,57 @@ function setCoins(v){coins=Math.max(0,v);try{localStorage.setItem("sokhan-coins"
 function best(){try{return +localStorage.getItem("sokhan-best")||0}catch(e){return 0}}
 function setBest(v){try{localStorage.setItem("sokhan-best",v)}catch(e){}}
 function showBest(){const b=best();$("best").textContent=b?"بهترین امتیاز تو: "+fa(b):""}
-function show(id){["start","game","end","nm"].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
+function show(id){["start","game","end","nm","pf","oc"].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
 CATS.forEach(([k,n])=>{const b=document.createElement("button");b.className="cat";b.textContent=n;b.setAttribute("aria-pressed",k===cat);
 b.onclick=()=>{cat=k;[...$("cats").children].forEach(c=>c.setAttribute("aria-pressed",c===b))};$("cats").appendChild(b)});
-function start(){qs=shuf(Q.filter(q=>cat==="all"||q[0]===cat)).slice(0,10);i=0;score=0;right=0;streak=0;show("game");ask()}
+function start(c){const oc=typeof c==="string",k=oc?c:cat;occ=oc;qs=shuf(Q.filter(q=>k==="all"||q[0]===k)).slice(0,10);i=0;score=0;right=0;streak=0;cur=0;gs=Array(np).fill(0);show("game");ask()}
 function ask(){locked=false;const q=qs[i];$("qn").textContent="سؤال "+fa(i+1)+" از "+fa(qs.length);
 $("streak").textContent=streak>1?"🔥 "+fa(streak):"";$("sc").textContent=fa(score)+" امتیاز";
-$("q").textContent=q[1];$("note").hidden=true;$("next").hidden=true;
+$("q").textContent=q[1];$("note").hidden=true;$("next").hidden=true;hinted=false;$("who").textContent=np>1?"نوبت: "+pn(cur):"";const hb=$("hint");hb.hidden=np>1;hb.disabled=coins<5;hb.textContent="💡 حذف دو گزینه غلط (۵ سکه)";
 const o=$("opts");o.innerHTML="";shuf([q[2],...q[3]]).forEach(a=>{const b=document.createElement("button");b.className="o";b.textContent=a;b.onclick=()=>pick(b,a);o.appendChild(b)});
 t=15;tick();clearInterval(timer);timer=setInterval(()=>{t-=.1;tick();if(t<=0)pick(null,null)},100)}
 function tick(){$("tm").style.width=Math.max(0,t/15*100)+"%"}
 function pick(btn,a){if(locked)return;locked=true;clearInterval(timer);const q=qs[i],ok=a===q[2];
 [...$("opts").children].forEach(b=>{b.disabled=true;if(b.textContent===q[2]){b.classList.add("ok");b.textContent="✓ "+b.textContent}else if(b===btn){b.classList.add("no")}else{b.style.opacity=.6}});
-if(ok){right++;streak++;score+=100+Math.round(t)*5+Math.min(streak-1,5)*10;setCoins(coins+2)}else{streak=0;setCoins(coins-1)}
+if(ok){right++;streak++;const pts=100+Math.round(t)*5+Math.min(streak-1,5)*10;score+=pts;gs[cur]+=pts;if(np===1){setCoins(coins+2);addXp(10)}}else{streak=0;if(np===1)setCoins(coins-1)}if(np===1)stat(q[0],ok);
 $("sc").textContent=fa(score)+" امتیاز";$("streak").textContent=streak>1?"🔥 "+fa(streak):"";
-$("verdict").textContent=ok?"درست گفتی! دو سکه گرفتی 🪙":(a===null?"وقت تمام شد. ":"")+"پاسخ درست: "+q[2]+" (یک سکه کم شد)";
+$("verdict").textContent=ok?"درست گفتی!"+(np===1?" دو سکه گرفتی 🪙":""):(a===null?"وقت تمام شد. ":"")+"پاسخ درست: "+q[2]+(np===1?" (یک سکه کم شد)":"");
 $("exp").textContent=q[4];$("note").hidden=false;$("next").hidden=false;$("next").textContent=i===qs.length-1?"دیدن نتیجه":"سؤال بعدی";$("next").focus()}
-$("next").onclick=()=>{i++;i<qs.length?ask():finish()};
+$("next").onclick=()=>{i++;cur=(cur+1)%np;i<qs.length?ask():finish()};
 function finish(){const r=right/qs.length;$("rank").textContent=r>=.9?"استاد سخن 🏆":r>=.7?"ادیب 📜":r>=.4?"شاگرد کوشا ✍️":"تازه‌وارد دبستان ادب 🌱";
 const nb=score>best();if(nb)setBest(score);
 $("fin").textContent=fa(right)+" پاسخ درست از "+fa(qs.length)+" و "+fa(score)+" امتیاز"+(nb?" (رکورد جدید!)":"")+"، موجودی تو "+fa(coins)+" سکه";
-$("rd").textContent=READS[Math.floor(Math.random()*READS.length)]+". چند دقیقه بخوان، لذتش بیشتر از هر امتیازی است.";show("end");showBest()}
+$("rd").textContent=READS[Math.floor(Math.random()*READS.length)]+". چند دقیقه بخوان، لذتش بیشتر از هر امتیازی است.";if(np>1){const o=gs.map((s,k)=>[s,k]).sort((a,b)=>b[0]-a[0]);$("rank").textContent="🏆 برنده: "+pn(o[0][1]);$("fin").textContent=o.map(([s,k],j)=>fa(j+1)+". "+pn(k)+": "+fa(s)).join(" | ")}else if(occ&&right>=7){setCoins(coins+20);$("fin").textContent+=" | جایزه چالش مناسبتی: ۲۰ سکه 🎁"}show("end");showBest()}
 $("go").onclick=start;$("again").onclick=start;$("menu").onclick=()=>show("start");showBest();setCoins(coins);
 N.forEach(([n,t,d])=>{const e=document.createElement("details");e.innerHTML="<summary></summary><p></p>";e.firstChild.textContent=n+" | "+t;e.lastChild.textContent=d;$("nl").appendChild(e)});
 $("names").onclick=()=>show("nm");$("nb").onclick=()=>show("start");
+let np=1,cur=0,gs=[],occ=false,hinted=false;
+const AVS=["📜","🦉","🌹","🕊️","🦅","🐉","🌙","⭐"];
+const LV=[[0,"نوآموز"],[50,"دبستانی"],[150,"شاگرد"],[300,"ادیب"],[500,"سخن‌سنج"],[800,"استاد"],[1200,"پیر سخن"]];
+const OC=[["s",2,1,"روز سعدی"],["f",2,25,"روز فردوسی"],["o",2,28,"روز خیام"],["o",7,7,"روز مولانا"],["h",7,20,"روز حافظ"],["h",9,30,"شب یلدا و دیوان حافظ"]];
+const MN=["","فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+let P={name:"بازیکن",av:"📜",xp:0,st:{},gift:0};
+try{const s=JSON.parse(localStorage.getItem("sokhan-p")||"null");if(s)P=Object.assign(P,s)}catch(e){}
+function saveP(){try{localStorage.setItem("sokhan-p",JSON.stringify(P))}catch(e){}$("pav").textContent=P.av;$("pnm").textContent=P.name}
+function addXp(n){P.xp+=n;saveP()}
+function stat(k,ok){const s=P.st[k]||(P.st[k]=[0,0]);s[1]++;if(ok)s[0]++;saveP()}
+function lvl(){let l=0;LV.forEach((x,j)=>{if(P.xp>=x[0])l=j});return l}
+function pn(k){return k===0?P.av+" "+P.name:["🦉","🌹","🕊️"][k-1]+" بازیکن "+fa(k+1)}
+function jt(){try{const p=new Intl.DateTimeFormat("en-u-ca-persian-nu-latn",{month:"numeric",day:"numeric"}).formatToParts(new Date());return[+p.find(x=>x.type==="month").value,+p.find(x=>x.type==="day").value]}catch(e){return[0,0]}}
+function ban(){const [m,d]=jt(),o=OC.find(x=>x[1]===m&&x[2]===d);$("ban").innerHTML=o?'<div class="ban">🎉 امروز '+o[3]+' است! از «چالش‌های مناسبتی» شروع کن و ۲۰ سکه جایزه بگیر.</div>':""}
+const GH=12*3600*1000;
+function giftTick(){const g=$("gift"),left=P.gift+GH-Date.now();if(left<=0){g.disabled=false;g.textContent="🎁 دریافت ۵۰ سکه هدیه"}else{g.disabled=true;g.textContent="هدیه بعدی تا "+fa(Math.floor(left/3600000))+" ساعت و "+fa(Math.floor(left%3600000/60000))+" دقیقه دیگر"}}
+$("gift").onclick=()=>{if(P.gift+GH>Date.now())return;P.gift=Date.now();saveP();setCoins(coins+50);giftTick()};
+$("hint").onclick=()=>{if(locked||hinted||coins<5)return;hinted=true;setCoins(coins-5);$("hint").disabled=true;const q=qs[i];shuf([...$("opts").children].filter(b=>b.textContent!==q[2])).slice(0,2).forEach(b=>{b.disabled=true;b.style.visibility="hidden"})};
+const pc=$("pc");[1,2,3,4].forEach(n=>{const b=document.createElement("button");b.className="cat";b.textContent=n===1?"تک‌نفره":fa(n)+" نفره (گروهی)";b.setAttribute("aria-pressed",n===np);b.onclick=()=>{np=n;[...pc.children].forEach(c=>c.setAttribute("aria-pressed",c===b))};pc.appendChild(b)});
+AVS.forEach(e=>{const b=document.createElement("button");b.textContent=e;b.onclick=()=>{P.av=e;saveP();renderProf()};$("avs").appendChild(b)});
+$("pnm2").oninput=function(){P.name=this.value.trim().slice(0,14)||"بازیکن";saveP()};
+function renderProf(){const l=lvl(),a=LV[l][0],b=LV[l+1]?LV[l+1][0]:a+1;$("pl").textContent="سطح "+fa(l+1)+": "+LV[l][1]+" ("+fa(P.xp)+" امتیاز تجربه)";$("xpb").style.width=Math.min(100,(P.xp-a)/(b-a)*100)+"%";$("pnm2").value=P.name;[...$("avs").children].forEach(x=>x.setAttribute("aria-pressed",x.textContent===P.av));const box=$("sts");box.innerHTML="";let bk=null,br=-1;CATS.slice(1).forEach(([k,n])=>{const s=P.st[k]||[0,0],r=s[1]?s[0]/s[1]:0;if(s[1]>=3&&r>br){br=r;bk=n}const d=document.createElement("div");d.className="stat";d.innerHTML='<span></span><div class="xp" style="flex:1"><i></i></div><small></small>';d.children[0].textContent=n;d.querySelector("i").style.width=Math.round(r*100)+"%";d.children[2].textContent=s[1]?fa(Math.round(r*100))+"٪":"—";box.appendChild(d)});$("bst").textContent=bk?"نقطه قوت تو: "+bk:"در هر دسته چند سؤال جواب بده تا نقطه قوتت معلوم شود."}
+function renderOc(){const [m,d]=jt(),box=$("ocl");box.innerHTML="";OC.forEach(([k,mm,dd,n])=>{const on=m===mm&&d===dd,r=document.createElement("div");r.className="occ";r.innerHTML="<span></span>";r.firstChild.textContent=n+" ("+fa(dd)+" "+MN[mm]+")";const b=document.createElement("button");b.className="cat";b.textContent=on?"شروع چالش":"🔒 در همان روز";b.disabled=!on;b.onclick=()=>start(k);r.appendChild(b);box.appendChild(r)})}
+$("prof").onclick=()=>{renderProf();show("pf")};$("occb").onclick=()=>{renderOc();show("oc")};
+$("pb").onclick=()=>show("start");$("ob").onclick=()=>show("start");
+saveP();ban();giftTick();setInterval(giftTick,30000);
 </script>
 </body>
 </html>
+
