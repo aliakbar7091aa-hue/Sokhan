@@ -66,6 +66,11 @@ input.nm{font:inherit;width:100%;padding:10px;border-radius:12px;border:2px soli
 .stat span{min-width:120px;font-weight:700}
 .xp{height:12px;background:var(--line);border-radius:8px;overflow:hidden}
 .xp i{display:block;height:100%;background:var(--c2)}
+.shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pop{animation:pp .3s}@keyframes pp{50%{transform:scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.shake,.pop{animation:none}}
+.fal{background:var(--card);border:2px solid var(--c2);border-radius:14px;padding:16px;text-align:center;font-size:1.15rem;line-height:2.2;white-space:pre-line;margin:10px 0}
+a.lk{color:var(--c1);font-weight:700}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -89,6 +94,9 @@ input.nm{font:inherit;width:100%;padding:10px;border-radius:12px;border:2px soli
 <button class="btn alt" id="names">نام‌نامه شاهنامه: با پهلوانان آشنا شو</button>
 <button class="btn alt" id="occb">چالش‌های مناسبتی</button>
 <button class="btn alt" id="prof">پروفایل، سطح و آواتار</button>
+<button class="btn" id="daily">چالش روزانه (همه امروز همین سؤال‌ها را دارند)</button>
+<button class="btn alt" id="readb">بخوان: شعر امروز و فال حافظ</button>
+<button class="btn alt" id="mute"></button>
 <p class="best" id="best"></p>
 </section>
 
@@ -103,10 +111,22 @@ input.nm{font:inherit;width:100%;padding:10px;border-radius:12px;border:2px soli
 <button class="btn" id="next" hidden>سؤال بعدی</button>
 </section>
 
+<section id="rs" hidden>
+<h2>شعر امروز</h2>
+<div class="fal" id="dv"></div>
+<p class="best" id="dvs"></p>
+<h2>فال حافظ</h2>
+<button class="btn" id="fbtn">فال بگیر 🔮</button>
+<div class="fal" id="fv" hidden></div>
+<p class="best">فال فقط برای سرگرمی است. غزل‌های کامل را در <a class="lk" href="https://ganjoor.net/hafez" target="_blank" rel="noopener">گنجور</a> بخوان.</p>
+<button class="btn alt" id="rb">بازگشت به منو</button>
+</section>
+
 <section id="pf" hidden>
 <h2>پروفایل من</h2>
 <input class="nm" id="pnm2" maxlength="14" aria-label="نام بازیکن" placeholder="نام تو">
 <div class="av" id="avs"></div>
+<p class="best">چهار آواتار آخر هرکدام ۱۰۰ سکه‌اند.</p>
 <div class="res"><b id="pl"></b></div>
 <div class="xp"><i id="xpb"></i></div>
 <h2>در کدام بخش قوی‌تری؟</h2>
@@ -134,6 +154,7 @@ input.nm{font:inherit;width:100%;padding:10px;border-radius:12px;border:2px soli
 <div class="sc" id="fin"></div>
 <div class="read"><b>پیشنهاد امشب:</b> <span id="rd"></span></div>
 <button class="btn" id="again">دوباره بازی کن</button>
+<button class="btn alt" id="share">📤 اشتراک نتیجه</button>
 <button class="btn alt" id="menu">بازگشت به منو</button>
 </section>
 </main>
@@ -187,7 +208,25 @@ const Q=[
 ["n","شاه توران و دشمن بزرگ ایران در شاهنامه کیست؟","افراسیاب",["ضحاک","سلم","کیخسرو"],"افراسیاب سیاوش را کشت و کیخسرو انتقام گرفت."],
 ["n","سیاوش برای اثبات بی‌گناهی از چه گذشت؟","آتش",["آب","کوه","بیابان"],"سیاوش سالم از آتش گذشت و پاکی‌اش ثابت شد."],
 ["n","نوروز را در شاهنامه به کدام پادشاه نسبت می‌دهند؟","جمشید",["فریدون","کیخسرو","منوچهر"],"جمشید بر تخت نشست و آن روز را نوروز نام نهادند."],
-["n","کدام پادشاه پیشدادی آتش را کشف کرد و جشن سده از اوست؟","هوشنگ",["جمشید","تهمورث","کیکاووس"],"هوشنگ از برخورد دو سنگ آتش را یافت."]
+["n","کدام پادشاه پیشدادی آتش را کشف کرد و جشن سده از اوست؟","هوشنگ",["جمشید","تهمورث","کیکاووس"],"هوشنگ از برخورد دو سنگ آتش را یافت."],
+["h","حافظ در کدام قرن هجری می‌زیست؟","هشتم",["چهارم","دوازدهم","دوم"],"حافظ در قرن هشتم در شیراز زندگی می‌کرد."],
+["h","دیوان حافظ را پس از مرگش چه کسی گرد آورد؟","محمد گلندام",["جامی","شاه شجاع","سلمان ساوجی"],"گلندام از دوستان حافظ بود."],
+["s","سعدی در کدام شهر زاده شد؟","شیراز",["اصفهان","تبریز","یزد"],"سعدی شیرازی در قرن هفتم می‌زیست."],
+["f","فردوسی شاهنامه را به کدام سلطان تقدیم کرد؟","محمود غزنوی",["ملکشاه","شاه‌عباس","نادرشاه"],"شاهنامه برای سلطان محمود غزنوی برده شد."],
+["f","شاهنامه در چه قالبی سروده شده است؟","مثنوی",["رباعی","غزل","قصیده"],"در مثنوی هر بیت قافیه جداگانه دارد."],
+["f","نخستین پادشاه شاهنامه کیست؟","کیومرث",["جمشید","فریدون","هوشنگ"],"شاهنامه با کیومرث آغاز می‌شود."],
+["n","سیمرغ لانه‌اش را روی کدام کوه داشت؟","البرز",["دماوند","الوند","سبلان"],"سیمرغ زال را در البرز پرورد."],
+["n","کدام پسر فریدون سهم ایران را گرفت و کشته شد؟","ایرج",["تور","سلم","منوچهر"],"سلم و تور از حسد برادرشان ایرج را کشتند."],
+["n","هفت‌خان رستم یعنی چه؟","هفت مرحله دشوار",["هفت شهر","هفت برادر","هفت شمشیر"],"رستم در راه مازندران هفت بلا را پشت سر گذاشت."],
+["o","عطار در کدام شهر زاده شد؟","نیشابور",["شیراز","قونیه","تبریز"],"عطار و خیام هر دو نیشابوری بودند."],
+["o","«مصیبت‌نامه» از کیست؟","عطار",["نظامی","سعدی","جامی"],"مصیبت‌نامه از منظومه‌های عرفانی عطار است."],
+["o","مثنوی معنوی با کدام قطعه آغاز می‌شود؟","نی‌نامه",["سیمرغ‌نامه","گلشن‌نامه","دادنامه"],"نی‌نامه آغاز دفتر اول مثنوی است."],
+["o","رباعی چند مصراع دارد؟","چهار",["دو","شش","هشت"],"رباعی قالبی چهارمصراعی است."],
+["o","خیام جز شعر در چه علمی نامدار بود؟","ریاضی و نجوم",["پزشکی","جغرافیا","فقه"],"خیام ریاضی‌دان و ستاره‌شناس بزرگی بود."],
+["p","مصرع دوم را کامل کن:\nهر که شد محرم دل در حرم یار بماند","وان که این کار ندانست در انکار بماند",["در ره عشق گرفتار به دیدار بماند","هر که از یار نشان یافت به اسرار بماند","جز دل خسته که شب‌ها به شب تار بماند"],"از غزل‌های حافظ."],
+["p","مصرع دوم را کامل کن:\nای دل غمدیده حالت به شود دل بد مکن","وین سر شوریده باز آید به سامان غم مخور",["کاین شب هجران به پایان آید آسان غم مخور","هر که او دلبسته شد در عشق ایمان غم مخور","خانه از دست رقیبان باز آید غم مخور"],"از غزل‌های حافظ."],
+["p","مصرع دوم را کامل کن:\nدوش وقت سحر از غصه نجاتم دادند","وندر آن ظلمت شب آب حیاتم دادند",["وز سر لطف و کرم جام مرادم دادند","پس ز یک شمع خیالی به نجاتم دادند","نامه‌ای در ره یار از خبرم دادند"],"از غزل‌های حافظ."],
+["p","مصرع دوم را کامل کن:\nتو کز محنت دیگران بی‌غمی","نشاید که نامت نهند آدمی",["که در بزم یاران نیابی همی","به نامی نمانی و نیکی کمی","نخواهی ز کس نام نیکو همی"],"از گلستان سعدی."]
 ];
 const CATS=[["all","همه چیز"],["p","تکمیل شعر"],["n","نام‌های شاهنامه"],["h","حافظ"],["s","سعدی"],["f","فردوسی"],["o","مولانا، عطار، خیام و..."]];
 const N=[["رستم","پهلوان سیستان","فرزند زال و رودابه و بزرگ‌ترین پهلوان ایران. با اسبش رخش از هفت‌خان گذشت و مازندران را گشود."],
@@ -210,17 +249,17 @@ const N=[["رستم","پهلوان سیستان","فرزند زال و رودا�
 ["سیمرغ","مرغ افسانه‌ای","زال را پرورد، زخم‌های رستم را درمان کرد و راه کشتن اسفندیار را نشان داد."]];
 const READS=["باب اول گلستان سعدی، درباره سیرت پادشاهان","یک غزل از دیوان حافظ، به‌نیت فال","داستان رستم و سهراب از شاهنامه","نی‌نامه، ابتدای دفتر اول مثنوی","چند رباعی از خیام پیش از خواب"];
 const $=id=>document.getElementById(id), fa=n=>Number(n).toLocaleString("fa-IR");
-const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 let cat="all",qs=[],i=0,score=0,right=0,streak=0,t=15,timer=null,locked=false;
 let coins=500;try{const c=localStorage.getItem("sokhan-coins");if(c!==null&&!isNaN(+c))coins=+c}catch(e){}
 function setCoins(v){coins=Math.max(0,v);try{localStorage.setItem("sokhan-coins",coins)}catch(e){}$("cn").textContent="🪙 "+fa(coins);$("w0").textContent=fa(coins)}
 function best(){try{return +localStorage.getItem("sokhan-best")||0}catch(e){return 0}}
 function setBest(v){try{localStorage.setItem("sokhan-best",v)}catch(e){}}
 function showBest(){const b=best();$("best").textContent=b?"بهترین امتیاز تو: "+fa(b):""}
-function show(id){["start","game","end","nm","pf","oc"].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
+function show(id){["start","game","end","nm","pf","oc","rs"].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
 CATS.forEach(([k,n])=>{const b=document.createElement("button");b.className="cat";b.textContent=n;b.setAttribute("aria-pressed",k===cat);
 b.onclick=()=>{cat=k;[...$("cats").children].forEach(c=>c.setAttribute("aria-pressed",c===b))};$("cats").appendChild(b)});
-function start(c){const oc=typeof c==="string",k=oc?c:cat;occ=oc;qs=shuf(Q.filter(q=>k==="all"||q[0]===k)).slice(0,10);i=0;score=0;right=0;streak=0;cur=0;gs=Array(np).fill(0);show("game");ask()}
+function start(c){const oc=typeof c==="string",k=oc?c:cat;occ=oc;dly=false;qs=shuf(Q.filter(q=>k==="all"||q[0]===k)).slice(0,10);i=0;score=0;right=0;streak=0;cur=0;gs=Array(np).fill(0);show("game");ask()}
 function ask(){locked=false;const q=qs[i];$("qn").textContent="سؤال "+fa(i+1)+" از "+fa(qs.length);
 $("streak").textContent=streak>1?"🔥 "+fa(streak):"";$("sc").textContent=fa(score)+" امتیاز";
 $("q").textContent=q[1];$("note").hidden=true;$("next").hidden=true;hinted=false;$("who").textContent=np>1?"نوبت: "+pn(cur):"";const hb=$("hint");hb.hidden=np>1;hb.disabled=coins<5;hb.textContent="💡 حذف دو گزینه غلط (۵ سکه)";
@@ -229,7 +268,7 @@ t=15;tick();clearInterval(timer);timer=setInterval(()=>{t-=.1;tick();if(t<=0)pic
 function tick(){$("tm").style.width=Math.max(0,t/15*100)+"%"}
 function pick(btn,a){if(locked)return;locked=true;clearInterval(timer);const q=qs[i],ok=a===q[2];
 [...$("opts").children].forEach(b=>{b.disabled=true;if(b.textContent===q[2]){b.classList.add("ok");b.textContent="✓ "+b.textContent}else if(b===btn){b.classList.add("no")}else{b.style.opacity=.6}});
-if(ok){right++;streak++;const pts=100+Math.round(t)*5+Math.min(streak-1,5)*10;score+=pts;gs[cur]+=pts;if(np===1){setCoins(coins+2);addXp(10)}}else{streak=0;if(np===1)setCoins(coins-1)}if(np===1)stat(q[0],ok);
+if(ok){right++;streak++;const pts=100+Math.round(t)*5+Math.min(streak-1,5)*10;score+=pts;gs[cur]+=pts;if(np===1){setCoins(coins+2);addXp(10)}}else{streak=0;if(np===1)setCoins(coins-1)}if(np===1)stat(q[0],ok);beep(ok);const cb=[...$("opts").children].find(b=>b.textContent.endsWith(q[2]));if(ok&&cb)cb.classList.add("pop");else if(btn)btn.classList.add("shake");
 $("sc").textContent=fa(score)+" امتیاز";$("streak").textContent=streak>1?"🔥 "+fa(streak):"";
 $("verdict").textContent=ok?"درست گفتی!"+(np===1?" دو سکه گرفتی 🪙":""):(a===null?"وقت تمام شد. ":"")+"پاسخ درست: "+q[2]+(np===1?" (یک سکه کم شد)":"");
 $("exp").textContent=q[4];$("note").hidden=false;$("next").hidden=false;$("next").textContent=i===qs.length-1?"دیدن نتیجه":"سؤال بعدی";$("next").focus()}
@@ -237,12 +276,12 @@ $("next").onclick=()=>{i++;cur=(cur+1)%np;i<qs.length?ask():finish()};
 function finish(){const r=right/qs.length;$("rank").textContent=r>=.9?"استاد سخن 🏆":r>=.7?"ادیب 📜":r>=.4?"شاگرد کوشا ✍️":"تازه‌وارد دبستان ادب 🌱";
 const nb=score>best();if(nb)setBest(score);
 $("fin").textContent=fa(right)+" پاسخ درست از "+fa(qs.length)+" و "+fa(score)+" امتیاز"+(nb?" (رکورد جدید!)":"")+"، موجودی تو "+fa(coins)+" سکه";
-$("rd").textContent=READS[Math.floor(Math.random()*READS.length)]+". چند دقیقه بخوان، لذتش بیشتر از هر امتیازی است.";if(np>1){const o=gs.map((s,k)=>[s,k]).sort((a,b)=>b[0]-a[0]);$("rank").textContent="🏆 برنده: "+pn(o[0][1]);$("fin").textContent=o.map(([s,k],j)=>fa(j+1)+". "+pn(k)+": "+fa(s)).join(" | ")}else if(occ&&right>=7){setCoins(coins+20);$("fin").textContent+=" | جایزه چالش مناسبتی: ۲۰ سکه 🎁"}show("end");showBest()}
+$("rd").textContent=READS[Math.floor(Math.random()*READS.length)]+". چند دقیقه بخوان، لذتش بیشتر از هر امتیازی است.";if(np>1){const o=gs.map((s,k)=>[s,k]).sort((a,b)=>b[0]-a[0]);$("rank").textContent="🏆 برنده: "+pn(o[0][1]);$("fin").textContent=o.map(([s,k],j)=>fa(j+1)+". "+pn(k)+": "+fa(s)).join(" | ")}else if(occ&&right>=7){setCoins(coins+20);$("fin").textContent+=" | جایزه چالش مناسبتی: ۲۰ سکه 🎁"}if(dly){dly=false;const dn=dayN();if(P.dl!==dn){P.ds=P.dl===dn-1?(P.ds||0)+1:1;P.dl=dn;const g=10+P.ds*2;setCoins(coins+g);saveP();$("fin").textContent+=" | جایزه روزانه: "+fa(g)+" سکه، "+fa(P.ds)+" روز پیاپی 🔥"}}show("end");showBest()}
 $("go").onclick=start;$("again").onclick=start;$("menu").onclick=()=>show("start");showBest();setCoins(coins);
 N.forEach(([n,t,d])=>{const e=document.createElement("details");e.innerHTML="<summary></summary><p></p>";e.firstChild.textContent=n+" | "+t;e.lastChild.textContent=d;$("nl").appendChild(e)});
 $("names").onclick=()=>show("nm");$("nb").onclick=()=>show("start");
 let np=1,cur=0,gs=[],occ=false,hinted=false;
-const AVS=["📜","🦉","🌹","🕊️","🦅","🐉","🌙","⭐"];
+const AVS=["📜","🦉","🌹","🕊️","🦅","🐉","🌙","⭐","🦚","🏺","🌸","👑"];const PRE=["🦚","🏺","🌸","👑"];
 const LV=[[0,"نوآموز"],[50,"دبستانی"],[150,"شاگرد"],[300,"ادیب"],[500,"سخن‌سنج"],[800,"استاد"],[1200,"پیر سخن"]];
 const OC=[["s",2,1,"روز سعدی"],["f",2,25,"روز فردوسی"],["o",2,28,"روز خیام"],["o",7,7,"روز مولانا"],["h",7,20,"روز حافظ"],["h",9,30,"شب یلدا و دیوان حافظ"]];
 const MN=["","فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
@@ -260,14 +299,27 @@ function giftTick(){const g=$("gift"),left=P.gift+GH-Date.now();if(left<=0){g.di
 $("gift").onclick=()=>{if(P.gift+GH>Date.now())return;P.gift=Date.now();saveP();setCoins(coins+50);giftTick()};
 $("hint").onclick=()=>{if(locked||hinted||coins<5)return;hinted=true;setCoins(coins-5);$("hint").disabled=true;const q=qs[i];shuf([...$("opts").children].filter(b=>b.textContent!==q[2])).slice(0,2).forEach(b=>{b.disabled=true;b.style.visibility="hidden"})};
 const pc=$("pc");[1,2,3,4].forEach(n=>{const b=document.createElement("button");b.className="cat";b.textContent=n===1?"تک‌نفره":fa(n)+" نفره (گروهی)";b.setAttribute("aria-pressed",n===np);b.onclick=()=>{np=n;[...pc.children].forEach(c=>c.setAttribute("aria-pressed",c===b))};pc.appendChild(b)});
-AVS.forEach(e=>{const b=document.createElement("button");b.textContent=e;b.onclick=()=>{P.av=e;saveP();renderProf()};$("avs").appendChild(b)});
+AVS.forEach(e=>{const b=document.createElement("button");b.textContent=e;b.onclick=()=>{const own=(P.own||[]).includes(e);if(PRE.includes(e)&&!own){if(coins<100){$("bst").textContent="برای این آواتار ۱۰۰ سکه لازم است.";return}setCoins(coins-100);P.own=[...(P.own||[]),e]}P.av=e;saveP();renderProf()};$("avs").appendChild(b)});
 $("pnm2").oninput=function(){P.name=this.value.trim().slice(0,14)||"بازیکن";saveP()};
 function renderProf(){const l=lvl(),a=LV[l][0],b=LV[l+1]?LV[l+1][0]:a+1;$("pl").textContent="سطح "+fa(l+1)+": "+LV[l][1]+" ("+fa(P.xp)+" امتیاز تجربه)";$("xpb").style.width=Math.min(100,(P.xp-a)/(b-a)*100)+"%";$("pnm2").value=P.name;[...$("avs").children].forEach(x=>x.setAttribute("aria-pressed",x.textContent===P.av));const box=$("sts");box.innerHTML="";let bk=null,br=-1;CATS.slice(1).forEach(([k,n])=>{const s=P.st[k]||[0,0],r=s[1]?s[0]/s[1]:0;if(s[1]>=3&&r>br){br=r;bk=n}const d=document.createElement("div");d.className="stat";d.innerHTML='<span></span><div class="xp" style="flex:1"><i></i></div><small></small>';d.children[0].textContent=n;d.querySelector("i").style.width=Math.round(r*100)+"%";d.children[2].textContent=s[1]?fa(Math.round(r*100))+"٪":"—";box.appendChild(d)});$("bst").textContent=bk?"نقطه قوت تو: "+bk:"در هر دسته چند سؤال جواب بده تا نقطه قوتت معلوم شود."}
 function renderOc(){const [m,d]=jt(),box=$("ocl");box.innerHTML="";OC.forEach(([k,mm,dd,n])=>{const on=m===mm&&d===dd,r=document.createElement("div");r.className="occ";r.innerHTML="<span></span>";r.firstChild.textContent=n+" ("+fa(dd)+" "+MN[mm]+")";const b=document.createElement("button");b.className="cat";b.textContent=on?"شروع چالش":"🔒 در همان روز";b.disabled=!on;b.onclick=()=>start(k);r.appendChild(b);box.appendChild(r)})}
 $("prof").onclick=()=>{renderProf();show("pf")};$("occb").onclick=()=>{renderOc();show("oc")};
 $("pb").onclick=()=>show("start");$("ob").onclick=()=>show("start");
+let rnd=Math.random,dly=false,ac;
+const dayN=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5);
+function seeded(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function daily(){rnd=seeded(dayN());qs=shuf(Q).slice(0,10);rnd=Math.random;np=1;occ=false;dly=true;i=0;score=0;right=0;streak=0;cur=0;gs=[0];show("game");ask()}
+function beep(ok){if(P.mu)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=ok?660:180;o.type=ok?"sine":"sawtooth";g.gain.value=.08;o.start();o.stop(ac.currentTime+(ok?.15:.3))}catch(e){}}
+function muteL(){$("mute").textContent=P.mu?"🔇 صدا خاموش":"🔊 صدا روشن"}
+$("mute").onclick=()=>{P.mu=!P.mu;saveP();muteL()};muteL();
+$("daily").onclick=daily;
+$("share").onclick=async()=>{const tx="در «گنجینه سخن» "+fa(score)+" امتیاز گرفتم و "+fa(right)+" جواب درست دادم! تو چقدر می‌گیری؟ "+location.href.split("#")[0];try{if(navigator.share)await navigator.share({text:tx});else{await navigator.clipboard.writeText(tx);$("fin").textContent+=" | متن کپی شد"}}catch(e){}};
+const DV=[["بنی‌آدم اعضای یکدیگرند\nکه در آفرینش ز یک گوهرند","سعدی، گلستان","saadi"],["توانا بود هر که دانا بود\nز دانش دل پیر برنا بود","فردوسی، شاهنامه","ferdousi"],["بشنو از نی چون حکایت می‌کند\nاز جدایی‌ها شکایت می‌کند","مولانا، مثنوی معنوی","moulavi"],["یوسف گم‌گشته بازآید به کنعان غم مخور\nکلبهٔ احزان شود روزی گلستان غم مخور","حافظ، دیوان","hafez"],["چو ایران نباشد تن من مباد\nبدین بوم و بر زنده یک تن مباد","فردوسی، شاهنامه","ferdousi"]];
+const FAL=["ای دل غمدیده حالت به شود دل بد مکن\nوین سر شوریده باز آید به سامان غم مخور","دوش وقت سحر از غصه نجاتم دادند\nوندر آن ظلمت شب آب حیاتم دادند","هر که شد محرم دل در حرم یار بماند\nوان که این کار ندانست در انکار بماند","یوسف گم‌گشته بازآید به کنعان غم مخور\nکلبهٔ احزان شود روزی گلستان غم مخور","الا یا ایها الساقی ادر کأساً و ناولها\nکه عشق آسان نمود اول ولی افتاد مشکل‌ها","دل می‌رود ز دستم صاحب‌دلان خدا را\nدردا که راز پنهان خواهد شد آشکارا"];
+function renderRead(){const v=DV[dayN()%DV.length];$("dv").textContent=v[0];$("dvs").innerHTML='<a class="lk" href="https://ganjoor.net/'+v[2]+'" target="_blank" rel="noopener">'+v[1]+' در گنجور</a>'}
+$("readb").onclick=()=>{renderRead();show("rs")};$("rb").onclick=()=>show("start");
+$("fbtn").onclick=()=>{const f=$("fv");f.hidden=false;f.textContent=FAL[Math.floor(Math.random()*FAL.length)]};
 saveP();ban();giftTick();setInterval(giftTick,30000);
 </script>
 </body>
 </html>
-
